@@ -3,14 +3,12 @@ const app = express();
 const dotenv = require('dotenv')
 dotenv.config()
 const port = process.env.PORT || 5000
+const router = require('./routes/index')
 
 
 
-
-
-app.get('/',(req,res)=>{
-    res.send('Selamat Datang')
-})
+app.use(express.json())
+app.use(router)
 
 
 

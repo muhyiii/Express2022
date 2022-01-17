@@ -11,6 +11,7 @@
   "author": "me2022",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "dotenv": "^11.0.0",
     "express": "^4.17.2",
     "mysql2": "^2.3.3",
