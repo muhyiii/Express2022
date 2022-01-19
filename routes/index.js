@@ -1,7 +1,9 @@
 const express = require("express");
-const router = express.Router();
+const { register } = require("../controller/AuthController");
+const { check } = require("express-validator");
 const UserModel = require("../models").usr;
-const bcrypt = require('bcrypt')
+const validationMiddleware = require("../middleware/ValidationMiddleware");
+const router = express.Router();
 
 router.get("/", (req, res) => {
   res.json({
@@ -9,18 +11,31 @@ router.get("/", (req, res) => {
   });
 });
 
-router.post("/register", async (req, res) => {
-  try {
-    let body = req.body
-    body.password =  await bcrypt.hashSync(body.password,10)
-    const users = await UserModel.create(body);
-    console.log(users)
+router.post(
+  "/register",
+  check("name").isLength({ min: 1 }).withMessage("Nama Wajib Diisi"),
+  check("email")
+    .isEmail()
+    .withMessage("Gunakan Email Yang Valid")
+    .custom((value) => {
+      return UserModel.findOne({ where: { email: value } }).then((user) => {
+        if (user) {
+          return Promise.reject("Email Telah Digunakan");
+        }
+      });
+    }),
+  check("password")
+    .isLength({ min: 8 })
+    .withMessage("Password Minimal 8 Karakter"),
+  check("status")
+    .isIn(["active", "nonActive"])
+    .withMessage("Masukan Status Anda Dengan Benar"),
+  check("jenisKelamin")
+    .isIn(["laki-laki", "perempuan"])
+    .withMessage("Masukan Jenis Kelamin Anda Dengan Benar"),
 
-    res.json({
-      status: "Succes",
-      messege: "Register Berhasil",
-    });
-  } catch (error) {}
-});
+  validationMiddleware,
+  register
+);
 
 module.exports = router;
