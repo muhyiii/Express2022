@@ -1,9 +1,11 @@
 const express = require("express");
 const { register } = require("../controller/AuthController");
-const { check } = require("express-validator");
-const UserModel = require("../models").usr;
+const { index, detail } = require("../controller/UserController");
+
 const validationMiddleware = require("../middleware/ValidationMiddleware");
+const { registerValidator } = require("../validator/AuthValidator");
 const router = express.Router();
+
 
 router.get("/", (req, res) => {
   res.json({
@@ -11,31 +13,20 @@ router.get("/", (req, res) => {
   });
 });
 
-router.post(
-  "/register",
-  check("name").isLength({ min: 1 }).withMessage("Nama Wajib Diisi"),
-  check("email")
-    .isEmail()
-    .withMessage("Gunakan Email Yang Valid")
-    .custom((value) => {
-      return UserModel.findOne({ where: { email: value } }).then((user) => {
-        if (user) {
-          return Promise.reject("Email Telah Digunakan");
-        }
-      });
-    }),
-  check("password")
-    .isLength({ min: 8 })
-    .withMessage("Password Minimal 8 Karakter"),
-  check("status")
-    .isIn(["active", "nonActive"])
-    .withMessage("Masukan Status Anda Dengan Benar"),
-  check("jenisKelamin")
-    .isIn(["laki-laki", "perempuan"])
-    .withMessage("Masukan Jenis Kelamin Anda Dengan Benar"),
+// GET USER ALL //
+router.get('/users',index)
 
-  validationMiddleware,
-  register
-);
+// GET USER DETAIL // 
+router.get('/users/:id',detail)
+
+// REGISTER //
+router.post("/register", registerValidator, validationMiddleware, register);
+
+
+
+
+
+
+
 
 module.exports = router;
