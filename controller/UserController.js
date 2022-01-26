@@ -1,15 +1,15 @@
-const UserModel = require("../models").usr;
+const UserModel = require("../models").produk;
 
 const index = async (req, res) => {
   try {
     const dataUser = await UserModel.findAll({
-      attributes: ["id", "name", "email", "status", "jenisKelamin"],
+      attributes: ["id", "kodeProduk", "namaProduk", "jumlah", "hargaSatuan", ],
     });
     console.log(dataUser);
 
     return res.json({
       status: "Berhasil",
-      messege: "Berikut Daftar Users",
+      messege: "Berikut Daftar Produk",
       data: dataUser,
     });
   } catch (error) {
@@ -29,12 +29,12 @@ const detail = async (req, res) => {
     if (dataDetail === null) {
       return res.json({
         status: "Gagal",
-        messege: "Data User Tidak Ditemukan",
+        messege: "Data Produk Tidak Ditemukan",
       });
     }
     return res.json({
       status: "Berhasil",
-      messege: "Berikut Data Detail User",
+      messege: "Berikut Data Detail Produk",
       data: dataDetail,
     });
   } catch (error) {
@@ -46,23 +46,23 @@ const detail = async (req, res) => {
   }
 };
 
-const detailByEmail = async (req, res) => {
+const detailByNama = async (req, res) => {
   try {
-    const email = req.params.email;
+    const namaProduk = req.params.namaProduk;
     const dataDetail = await UserModel.findOne({
       where: {
-        email: email,
+        namaProduk: namaProduk,
       },
     });
     if (dataDetail === null) {
       return res.json({
         status: "Gagal",
-        messege: "Data User Tidak Ditemukan",
+        messege: "Data Produk Tidak Ditemukan",
       });
     }
     return res.json({
       status: "Berhasil",
-      messege: "Berikut Data Detail User",
+      messege: "Berikut Data Detail Produk",
       data: dataDetail,
     });
   } catch (error) {
@@ -85,12 +85,12 @@ const hapus = async (req, res) => {
     if (dataDetail === 0) {
       return res.json({
         status: "Gagal",
-        messege: "Data User Tidak Ditemukan",
+        messege: "Data Produk Tidak Ditemukan",
       });
     }
     return res.json({
       status: "Berhasil",
-      messege: "User Berhasil Dihapus",
+      messege: "Produk Berhasil Dihapus",
     });
   } catch (error) {
     console.log(error);
@@ -103,17 +103,17 @@ const hapus = async (req, res) => {
 const perbarui = async (req, res) => {
   try {
     const id = req.params.id;
-    const {name} = req.body;
+    const {jumlah,hargaSatuan} = req.body;
     const dataDetail = await UserModel.findByPk(id);
     if (dataDetail === null) {
       return res.json({
         status: "Gagal",
-        messege: "Data User Tidak Ditemukan",
+        messege: "Data Produk Tidak Ditemukan",
       });
     }
 
     await UserModel.update(
-      { name: name },
+      { jumlah, hargaSatuan,namaProduk:nama},
       {
         where: {
           id: id,
@@ -133,4 +133,4 @@ const perbarui = async (req, res) => {
   }
 };
 
-module.exports = { index, detail, detailByEmail, hapus, perbarui };
+module.exports = { index, detail, detailByNama, hapus, perbarui };

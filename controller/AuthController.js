@@ -1,11 +1,11 @@
-const UserModel = require("../models").usr;
+const UserModel = require("../models").produk;
 const bcrypt = require("bcrypt");
 const { validationResult } = require("express-validator");
 
 const register = async (req, res) => {
   try {
     let body = req.body;
-    body.password = await bcrypt.hashSync(body.password, 10);
+    console.log(body)
     const users = await UserModel.create(body);
     console.log(users);
 
@@ -13,7 +13,9 @@ const register = async (req, res) => {
       status: "Succes",
       messege: "Register Berhasil",
     });
-  } catch (error) {}
+  } catch (error) {
+    console.log('error' ,error)
+  }
 };
 
 module.exports = { register };
