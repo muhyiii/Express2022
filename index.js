@@ -12,6 +12,6 @@ app.use(router);
 
 ////////////////////////////////////////////////////////////////////
 app.listen(port, () => {
-  console.log(`Server Berjalan di port ${port}`);
+  console.log(`....................Server Berjalan di port ${port} Berhasil....................`);
 });
 ////////////////////////////////////////////////////////////////////
